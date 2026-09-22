@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  Дашборд СибГИУ
+  Автор промта для генерации дашборда и дизайн-системы:
+    Куценко А.И.
+  Год создания: 2026
+  Контакт для вопросов об авторстве: kutenko@sibsiu.ru
+  ============================================================
+  Любое использование, копирование или модификация данной
+  дизайн-системы и промта допускается только с указанием
+  авторства. Ссылка на автора обязательна.
+  ============================================================
+-->
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Куценко А.И.">
+<meta name="copyright" content="© 2026 Куценко А.И. Все права защищены.">
+<title>Химический состав заливочного чугуна · Дашборд СибГИУ</title>
+<style>
+:root{
+  --blue:#0078BE;--cyan:#00A5E6;--purple:#961E82;--crimson:#E60F4B;--orange:#E64123;
+  --dark:#2B2A29;--bg:#f3f6fa;--card:#ffffff;--text:#1a2233;--muted:#6b7a90;--line:#e3e9f1;
+  --grad-cool:linear-gradient(135deg,#0078BE 0%,#00A5E6 100%);
+  --grad-hot:linear-gradient(135deg,#961E82 0%,#E60F4B 60%,#E64123 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}
+
+header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);
+  box-shadow:0 1px 0 rgba(0,0,0,.02),0 4px 20px -8px rgba(0,30,80,.06);}
+.header-in{max-width:1440px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit}
+.brand-logo{height:38px;width:auto;display:block;flex-shrink:0;transition:transform .3s}
+.brand:hover .brand-logo{transform:scale(1.03)}
+.brand-txt b{display:block;font-size:15px;color:var(--text);font-weight:700;letter-spacing:-.2px}
+.brand-txt span{display:block;font-size:11px;color:var(--muted);letter-spacing:.2px;margin-top:1px}
+.header-meta{margin-left:auto;display:flex;gap:22px;align-items:center;font-size:11.5px;color:var(--muted);letter-spacing:.3px}
+.header-meta b{color:var(--text);font-weight:600;display:block;font-size:13px;letter-spacing:0;margin-top:2px}
+
+nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:66px;z-index:49}
+.nav-in{max-width:1440px;margin:0 auto;padding:0 28px;display:flex;gap:4px;overflow-x:auto}
+.nav-in::-webkit-scrollbar{height:3px}
+.nav-in::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.tab{background:none;border:none;cursor:pointer;padding:14px 18px 12px;font-size:13px;font-weight:600;
+  color:var(--muted);position:relative;white-space:nowrap;transition:color .2s;font-family:inherit}
+.tab:hover{color:var(--blue)}
+.tab.active{color:var(--blue)}
+.tab.active::after{content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:3px;
+  background:var(--grad-cool);border-radius:3px 3px 0 0;animation:slideIn .3s ease-out}
+@keyframes slideIn{from{transform:scaleX(.4);opacity:0}to{transform:scaleX(1);opacity:1}}
+
+main{max-width:1440px;margin:0 auto;padding:28px}
+.page{display:none;animation:fadeUp .45s cubic-bezier(.22,1,.36,1)}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.section-title{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
+  color:var(--muted);margin:32px 0 14px;display:flex;align-items:center;gap:12px}
+.section-title::before{content:"";width:22px;height:2px;background:var(--grad-cool);border-radius:2px}
+.section-title:first-child{margin-top:0}
+
+.card{background:var(--card);border-radius:14px;padding:20px 22px;
+  box-shadow:0 1px 2px rgba(0,20,60,.04),0 8px 24px -12px rgba(0,30,80,.08);
+  border:1px solid var(--line);transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-3px) rotateX(1deg);box-shadow:0 2px 4px rgba(0,20,60,.04),0 16px 34px -14px rgba(0,30,80,.14)}
+.card.highlight{border-left:4px solid var(--orange)}
+.card.ce-card{border-left:4px solid var(--purple)}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.kpi{position:relative;overflow:hidden;padding-top:22px}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad-cool)}
+.kpi.hot::before{background:var(--grad-hot)}
+.kpi.ce::before{background:linear-gradient(135deg,#961E82 0%,#E60F4B 50%,#E64123 100%)}
+.kpi-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.kpi-value{font-size:34px;font-weight:800;letter-spacing:-1.2px;line-height:1;color:var(--text)}
+.kpi-value small{font-size:14px;font-weight:600;color:var(--muted);margin-left:4px;letter-spacing:0}
+.kpi-sub{margin-top:10px;font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.kpi-range{margin-top:12px;height:6px;border-radius:6px;background:var(--line);position:relative;overflow:hidden}
+.kpi-range-fill{position:absolute;top:0;bottom:0;background:var(--grad-cool);border-radius:6px;
+  animation:growWidth 1.1s cubic-bezier(.22,1,.36,1)}
+.kpi.hot .kpi-range-fill{background:var(--grad-hot)}
+.kpi.ce .kpi-range-fill{background:linear-gradient(90deg,#961E82,#E64123)}
+@keyframes growWidth{from{width:0 !important}}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;
+  font-size:11px;font-weight:700;letter-spacing:.3px}
+.pill.ok{background:rgba(0,165,230,.12);color:#0088c2}
+.pill.warn{background:rgba(230,65,35,.12);color:var(--orange)}
+.pill.err{background:rgba(230,15,75,.12);color:var(--crimson)}
+.pill.mut{background:rgba(156,163,175,.14);color:#6b7280}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.chart-title .dot{width:10px;height:10px;border-radius:3px}
+.chart-legend{font-size:11px;color:var(--muted);margin-bottom:10px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .area{opacity:0;animation:fadeArea 1.2s ease-out .1s forwards}
+@keyframes fadeArea{to{opacity:.14}}
+.chart .bar{opacity:0;animation:fadeBar .7s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes fadeBar{from{opacity:0;transform:scaleY(0);transform-origin:bottom}to{opacity:1;transform:scaleY(1)}}
+.chart .path{stroke-dasharray:2000;stroke-dashoffset:2000;animation:draw 1.6s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.chart .zone{opacity:0;animation:fadeArea .8s ease-out .05s forwards}
+.chart .pt{opacity:0;animation:fadePoint .3s ease-out forwards}
+@keyframes fadePoint{to{opacity:1}}
+
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{text-align:left;font-weight:700;color:var(--muted);font-size:11px;letter-spacing:.8px;
+  text-transform:uppercase;padding:10px 12px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#f8fafc}
+.tbl .num{font-variant-numeric:tabular-nums;text-align:right}
+
+.matrix{display:grid;grid-template-columns:repeat(auto-fill,minmax(11px,1fr));gap:3px;margin-top:12px}
+.cell{aspect-ratio:1;border-radius:3px;background:#e8edf3;transition:transform .2s;cursor:pointer;position:relative}
+.cell:hover{transform:scale(1.4);z-index:10}
+.cell.ok{background:linear-gradient(135deg,#0078BE,#00A5E6)}
+.cell.warn{background:linear-gradient(135deg,#E64123,#f5a623)}
+.cell.err{background:linear-gradient(135deg,#961E82,#E60F4B)}
+.cell.below{background:linear-gradient(135deg,#961E82,#E60F4B)}
+.legend-row{display:flex;gap:20px;align-items:center;margin-top:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.cell-legend{display:inline-flex;align-items:center;gap:8px;margin-right:18px;font-size:12px}
+.cell-legend i{display:inline-block;width:12px;height:12px;border-radius:3px}
+
+.expert{display:flex;gap:16px;padding:18px 20px;border-radius:12px;background:#fff;
+  border:1px solid var(--line);border-left:4px solid var(--cyan)}
+.expert.hot{border-left-color:var(--crimson)}
+.expert.warn{border-left-color:var(--orange)}
+.expert.ce{border-left-color:var(--purple)}
+.expert .icon{flex-shrink:0;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+  background:rgba(0,120,190,.08);color:var(--blue);font-size:18px}
+.expert.hot .icon{background:rgba(230,15,75,.08);color:var(--crimson)}
+.expert.warn .icon{background:rgba(230,65,35,.08);color:var(--orange)}
+.expert.ce .icon{background:rgba(150,30,130,.08);color:var(--purple)}
+.expert-body b{display:block;font-size:13.5px;margin-bottom:4px;color:var(--text)}
+.expert-body p{font-size:13px;color:#3b475c;line-height:1.6;margin:0}
+
+footer{max-width:1440px;margin:40px auto 0;padding:24px 28px 40px;
+  border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+.footer-context{margin-bottom:8px;font-size:12.5px}
+.footer-context b{color:var(--text)}
+.footer-author{font-size:11px;color:#8b98ab;letter-spacing:.3px}
+.footer-author b{color:var(--blue)}
+
+.stat-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.stat-row:last-child{border-bottom:none}
+.stat-row span:first-child{color:var(--muted)}
+.stat-row span:last-child{font-weight:700;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;
+  background:rgba(0,120,190,.1);color:var(--blue)}
+.badge.hot{background:rgba(230,15,75,.1);color:var(--crimson)}
+.badge.warn{background:rgba(230,65,35,.1);color:var(--orange)}
+.badge.ce{background:rgba(150,30,130,.1);color:var(--purple)}
+
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin:12px 0;
+  background:linear-gradient(135deg,rgba(150,30,130,.05),rgba(230,65,35,.04));
+  border:1px solid rgba(150,30,130,.15)}
+.callout .ico{flex-shrink:0;width:32px;height:32px;display:grid;place-items:center;
+  border-radius:8px;background:linear-gradient(135deg,#961E82,#E64123);color:#fff;font-weight:800;font-size:14px}
+.callout p{font-size:12.5px;color:#3b475c;line-height:1.55;margin:0}
+.callout b{color:var(--text)}
+
+@media(max-width:900px){
+  .header-in{padding:12px 16px;gap:14px}
+  .brand-logo{height:28px}
+  .brand-txt b{font-size:13px}
+  .brand-txt span{font-size:10px}
+  .header-meta{display:none}
+  nav{top:auto;position:static}
+  .nav-in{padding:0 16px}
+  .tab{padding:12px 12px 10px;font-size:12px}
+  main{padding:16px}
+  .grid-2{grid-template-columns:1fr}
+  .kpi-value{font-size:26px}
+  .card{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-in">
+    <a href="#" class="brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192436 58616.1" class="brand-logo" role="img" aria-label="СибГИУ">
+        <title>Сибирский государственный индустриальный университет</title>
+        <g fill="#2B2A29" fill-rule="nonzero">
+          <path d="M124204.3 15527.6c1471.4,0 2747.6,284 3827.8,852 1080.5,568.1 1904.8,1378.6 2472.8,2431 568.2,1052.5 852.3,2277 852.3,3674 0,1434.4 -367.9,2696.2 -1103.8,3786 -735.7,1089.7 -1750.9,1937.3 -3045.5,2542.7 -1294.7,605.2 -2752.2,907.9 -4372.6,907.9 -2663.9,0 -4787.4,-828.8 -6370.8,-2486.7 -1583.1,-1657.7 -2374.9,-4144.6 -2374.9,-7460.2 0,-6221.4 2756.8,-9853.6 8270.5,-10897l7348.5 -1396.8 726.4 4442.4 -6370.5 1201.7c-1620.5,297.9 -2807.9,777.5 -3562.5,1438.7 -754.4,661.5 -1206.1,1615.9 -1355.1,2864 1359.8,-1266.6 3045.7,-1899.8 5057.4,-1899.8zm-40039.7 13802.8c-2048.8,0 -3888.2,-433.2 -5518.2,-1299.2 -6842.8,-3636.6 -7136.9,-13208.6 0,-17001.3 1630,-866.1 3469.4,-1299.3 5518.2,-1299.3l7456.3 0 0 4589.6c-2392.3,-1.3 -4784.5,-7.3 -7176.8,-7.3 -994.1,0 -1961.2,207.2 -2836.2,698.7 -3563.2,2001.6 -3393.1,7131.5 0,9037.8 884.6,497 1843.2,698.7 2836.2,698.7l7176.8 0 0 4582.3 -7456.3 0zm10589.5 -15144.3l5281 0 0 7935.5 6342.7 -7935.5 4889.8 0 0 15144.3 -5308.7 0 0 -7963.2 -6287 7963.2 -4917.8 0 0 -4191.2 0 -10953zm53674.9 -27.7l-8857.1 0 0 15172 -5448.6 0 0 -19558.8 14333.6 0 -27.9 4386.8zm2514.6 -4386.8l5448.5 0 0 11483.6 8074.9 -11483.6 5197.1 0 0 19558.8 -5448.6 0 0 -11456 -8046.8 11456 -5225.1 0 0 -19558.8zm41492.4 0l-8102.9 15116c-856.9,1620.7 -1904.9,2850 -3143.3,3688.4 -1238.8,838.1 -2594.1,1257.2 -4065.5,1257.2 -1080.3,0 -2235.4,-242.3 -3464.7,-726.6l1313.3 -4079.3c763.6,223.6 1415.6,335.3 1955.7,335.3 540.3,0 1019.9,-121.2 1439,-363.1 419.3,-242.5 805.6,-624.2 1159.6,-1145.7l-7600 -14082.3 5839.8 0 4554.3 9444.1 4721.9 -9444.1 5392.8 0zm-69573 15926.4c950,0 1699.9,-307.4 2249.2,-922 549.4,-614.9 824.3,-1378.4 824.3,-2291.3 0,-968.5 -279.3,-1727.6 -838,-2277.1 -558.8,-549.5 -1303.9,-824.4 -2235.4,-824.4 -950,0 -1709.2,279.5 -2277.2,838.3 -568,558.7 -852,1322.6 -852,2291.3 0,931.3 288.5,1694.8 866,2291 577.4,596.1 1331.8,894.2 2263.2,894.2z"/>
+          <path d="M75978.3 42694.8c-519.6,0 -988.9,-114 -1408.1,-341.9 -419,-228 -747.5,-542.9 -985.2,-944.8 -237.8,-402 -356.6,-855.4 -356.6,-1360.2 0,-505 120,-958.4 360.3,-1360.2 240.2,-402 569.9,-716.9 988.9,-944.8 419.1,-227.9 888.5,-341.9 1408,-341.9 421.6,0 806.3,73.5 1154.4,220.6 348,146.9 642.1,360.2 882.3,639.6l-617.6 580.7c-372.5,-401.9 -830.9,-602.9 -1374.9,-602.9 -352.9,0 -669,77.2 -948.4,231.6 -279.5,154.4 -497.6,368.9 -654.4,643.3 -156.9,274.6 -235.4,585.8 -235.4,933.8 0,348 78.5,659.3 235.4,933.7 156.8,274.6 374.9,488.9 654.4,643.3 279.3,154.4 595.5,231.6 948.4,231.6 544,0 1002.4,-203.4 1374.9,-610.2l617.6 588.2c-240.2,279.4 -535.5,492.7 -886,639.7 -350.4,147 -736.4,220.5 -1157.9,220.5zm2830.7 -3999.7l919.1 0 0 2588.1 2168.9 -2588.1 838.1 0 0 3926.3 -919 0 0 -2588.2 -2161.7 2588.2 -845.5 0 0 -3926.3zm7286.3 191.1c372.6,0 701,79.7 985.3,239 284.3,159.3 506.1,381.1 665.5,665.4 159.2,284.4 238.9,610.3 238.9,977.9 0,377.4 -88.2,712 -264.7,1003.7 -176.5,291.5 -424,518.2 -742.5,680.1 -318.6,161.7 -681.4,242.6 -1088.3,242.6 -681.3,0 -1208.2,-225.5 -1580.8,-676.4 -372.6,-450.9 -558.9,-1100.4 -558.9,-1948.3 0,-789.3 169.2,-1414.3 507.4,-1874.9 338.2,-460.8 855.4,-764.7 1551.3,-911.7l1823.4 -389.7 132.3 823.5 -1654.3 338.3c-475.3,98 -830.8,264.6 -1066,500 -235.3,235.2 -372.6,566.2 -411.7,992.6 176.5,-210.9 389.7,-373.8 639.7,-489 249.9,-115.1 524.4,-172.8 823.4,-172.8zm-183.7 3066.1c338.2,0 611.4,-109.1 819.8,-327.3 208.3,-218.1 312.4,-496.3 312.4,-834.5 0,-338.2 -104.2,-610.2 -312.4,-816.1 -208.4,-205.9 -481.6,-308.8 -819.8,-308.8 -343.1,0 -620.2,102.9 -830.9,308.8 -210.8,205.9 -316.2,477.9 -316.2,816.1 0,343.1 106.7,622.6 319.8,838.2 213.3,215.7 489,323.6 827.3,323.6zm2963 -3257.2l919.1 0 0 2588.1 2168.9 -2588.1 838.1 0 0 3926.3 -919 0 0 -2588.2 -2161.7 2588.2 -845.5 0 0 -3926.3zm7337.7 -44.2c382.3,0 724.3,83.3 1025.7,250 301.6,166.6 538,402 709.6,705.8 171.5,304 257.3,654.4 257.3,1051.4 0,397.1 -85.8,748.7 -257.3,1055.1 -171.6,306.4 -408,542.9 -709.6,709.5 -301.4,166.7 -643.3,250 -1025.7,250 -529.4,0 -948.5,-176.6 -1257.2,-529.4l0 1904.3 -919.1 0 0 -5352.6 875 0 0 514.7c151.8,-186.3 339.5,-326.1 562.5,-419.2 222.9,-93.1 469.3,-139.7 738.8,-139.7zm-102.9 3235.2c338.2,0 616.4,-112.8 834.4,-338.3 218.1,-225.4 327.3,-522 327.3,-889.7 0,-367.7 -109.2,-664.2 -327.3,-889.7 -218,-225.5 -496.3,-338.2 -834.4,-338.2 -220.6,0 -419.1,50.2 -595.6,150.7 -176.5,100.4 -316.2,243.9 -419.1,430.1 -103,186.2 -154.4,402 -154.4,647 0,245 51.4,460.8 154.4,647 102.9,186.2 242.7,329.7 419.1,430.2 176.5,100.4 375,150.7 595.6,150.7z"/>
+        </g>
+        <g>
+          <path fill="#961E82" d="M8584.3 8585.8c-11599.3,11599.1 -11290.9,30162.4 -0.2,41444.2l6906.8 -6906.3c-7407.9,-7407.9 -7845.6,-19785.5 -0.1,-27631.4l-6906.5 -6906.5z"/>
+          <path fill="#E60F4B" d="M29306.5 48846.7c-5395.5,0 -10280.1,-2186.9 -13815.9,-5722.7l-6906.7 6906.7c5304.1,5304.1 12631.2,8585.5 20722.6,8585.5l29307.9 -0.2c0,-9769.3 0,-19538.5 0,-29307.7l-29307.9 -0.2 -6908 6908c1768,1767.9 4210.3,2861.3 6908,2861.3 6512.8,0 13025.7,-0.1 19538.5,-0.1l0 9769.4 -10820.5 0 -8718 0z"/>
+          <path fill="#00A5E6" d="M22398.5 22400l6908 6908 19538.5 0.2 9769.4 -9769.5c0,-6512.8 0,-13025.7 0,-19538.5l-29307.9 -0.2c-8091.5,0 -15418.5,3281.3 -20722.2,8585.8l6906.3 6906.3c3536,-3535.8 8420.6,-5722.7 13815.9,-5722.7l19538.5 0.2 0 9769.2c-6512.8,0 -13025.7,-0.1 -19538.5,-0.1 -2697.7,0 -5140,1093.4 -6908,2861.3z"/>
+          <path fill="#0078BE" d="M29306.5 29308l19538.5 0.2 9769.4 -9769.5c0,-6512.8 0,-13025.7 0,-19538.5l-9769.4 9769.3 0 9769.2c-6512.8,0 -13025.7,-0.1 -19538.5,-0.1 -2697.7,0 -5140,1093.4 -6908,2861.3l6908 6908z"/>
+          <path fill="#E64123" d="M48845 39077.3l0.1 9769.3 9769.3 9769.3c0,-9769.3 0,-19538.5 0,-29307.7l-29307.9 -0.2 -6908 6908c1768,1767.9 4210.3,2861.3 6908,2861.3 6512.8,0 13025.7,-0.1 19538.5,-0.1z"/>
+        </g>
+      </svg>
+      <div class="brand-txt">
+        <b>Химсостав заливочного чугуна · CE</b>
+        <span>Сибирский государственный индустриальный университет</span>
+      </div>
+    </a>
+    <div class="header-meta">
+      <div>Период<b>30.12.2025 — 14.04.2026</b></div>
+      <div>Образцы<b>437 — 579</b></div>
+      <div>Источник<b>Анализы ЛХА 2026</b></div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-in">
+    <button class="tab active" data-page="overview">Обзор</button>
+    <button class="tab" data-page="ce">Углеродный эквивалент</button>
+    <button class="tab" data-page="dynamics">Динамика</button>
+    <button class="tab" data-page="deviations">Отклонения</button>
+    <button class="tab" data-page="correlations">Корреляции</button>
+    <button class="tab" data-page="expert">Экспертиза</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ================= OVERVIEW ================= -->
+<section class="page active" id="overview">
+  <div class="section-title">Ключевые показатели качества</div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="section-title">Общая сводка по элементам</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="chart-title"><span class="dot" style="background:var(--grad-cool)"></span>Доля проб в норме по элементу</div>
+      <div class="chart-legend">% от общего количества 78 проб</div>
+      <div class="chart" id="complianceChart"></div>
+    </div>
+    <div class="card">
+      <div class="chart-title"><span class="dot" style="background:var(--grad-hot)"></span>Сводная статистика</div>
+      <div class="chart-legend">Среднее, мин, макс по каждому элементу</div>
+      <table class="tbl" id="statsTable"></table>
+    </div>
+  </div>
+
+  <div class="section-title">Распределение проб по датам отбора</div>
+  <div class="card">
+    <div class="chart-title"><span class="dot" style="background:var(--grad-cool)"></span>Количество проб по датам</div>
+    <div class="chart-legend">Образцы 437–579 · период 30.12.2025 — 14.04.2026</div>
+    <div class="chart" id="countChart"></div>
+  </div>
+</section>
+
+<!-- ================= CE TAB ================= -->
+<section class="page" id="ce">
+  <div class="section-title">Углеродный эквивалент · CE = %C + 0,3·(%Si + %P)</div>
+  <div class="kpi-grid" id="ceKpiGrid"></div>
+
+  <div class="grid-2" style="margin-top:24px">
+    <div class="card ce-card">
+      <div class="chart-title"><span class="dot" style="background:var(--grad-hot)"></span>CE по времени</div>
+      <div class="chart-legend">Целевое значение 4,15 · коридор 3,90–4,40 · линия тренда</div>
+      <div class="chart" id="ceLineChart"></div>
+    </div>
+    <div class="card ce-card">
+      <div class="chart-title"><span class="dot" style="background:var(--purple)"></span>Гистограмма распределения CE</div>
+      <div class="chart-legend">Частота попадания в интервалы по 0,05</div>
+      <div class="chart" id="ceHistogram"></div>
+    </div>
+  </div>
+
+  <div class="section-title">Соотношение C и CE</div>
+  <div class="grid-2">
+    <div class="card ce-card">
+      <div class="chart-title"><span class="dot" style="background:var(--grad-cool)"></span>C — CE · зона близости к эвтектике</div>
+      <div class="chart-legend">Точки ниже 4,15 — риск усадочной пористости</div>
+      <div class="chart" id="ceScatterC"></div>
+    </div>
+    <div class="card ce-card">
+      <div class="chart-title"><span class="dot" style="background:var(--orange)"></span>Смещение CE по месяцам</div>
+      <div class="chart-legend">Средний CE в январе, феврале, марте и апреле</div>
+      <div class="chart" id="ceMonthly"></div>
+    </div>
+  </div>
+
+  <div class="section-title">Экспертное заключение по CE</div>
+  <div id="ceExpertBlocks" style="display:flex;flex-direction:column;gap:14px"></div>
+</section>
+
+<!-- ================= DYNAMICS ================= -->
+<section class="page" id="dynamics">
+  <div class="section-title">Временные ряды по элементам</div>
+  <div class="grid-2" id="lineCharts"></div>
+</section>
+
+<!-- ================= DEVIATIONS ================= -->
+<section class="page" id="deviations">
+  <div class="section-title">Карта отклонений</div>
+  <div class="card">
+    <div class="chart-title"><span class="dot" style="background:var(--grad-hot)"></span>Тепловая карта проб · 78 × 6</div>
+    <div class="chart-legend">Каждая клетка — одна проба. Порядок: от образца 437 к 579. Группы: C, Si, P, S, Mn, CE</div>
+    <div class="matrix" id="devMatrix"></div>
+    <div class="legend-row">
+      <span class="cell-legend"><i style="background:linear-gradient(135deg,#0078BE,#00A5E6)"></i>В норме</span>
+      <span class="cell-legend"><i style="background:linear-gradient(135deg,#E64123,#f5a623)"></i>Близко к границе (±5%)</span>
+      <span class="cell-legend"><i style="background:linear-gradient(135deg,#961E82,#E60F4B)"></i>Вне допуска</span>
+    </div>
+  </div>
+
+  <div class="section-title">Структура отклонений по элементам</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="chart-title"><span class="dot" style="background:var(--crimson)"></span>Количество проб вне допуска</div>
+      <div class="chart-legend">Абсолютные значения и доля от 78 проб</div>
+      <div class="chart" id="devBarChart"></div>
+    </div>
+    <div class="card">
+      <div class="chart-title"><span class="dot" style="background:var(--orange)"></span>Верхние / нижние отклонения</div>
+      <div class="chart-legend">Раздельно по направлениям</div>
+      <div class="chart" id="devSplitChart"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CORRELATIONS ================= -->
+<section class="page" id="correlations">
+  <div class="section-title">Скрытые паттерны и взаимосвязи</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="chart-title"><span class="dot" style="background:var(--purple)"></span>S — Mn · связка «сера–марганец»</div>
+      <div class="chart-legend">Марганец связывает серу. Красная зона — обе величины вне допуска</div>
+      <div class="chart" id="scatterSMn"></div>
+    </div>
+    <div class="card">
+      <div class="chart-title"><span class="dot" style="background:var(--blue)"></span>Si — C · структурная связка</div>
+      <div class="chart-legend">Обратная зависимость в марте–апреле</div>
+      <div class="chart" id="scatterSiC"></div>
+    </div>
+  </div>
+
+  <div class="section-title">Матрица парных корреляций (Пирсон)</div>
+  <div class="card">
+    <table class="tbl" id="corrMatrix"></table>
+  </div>
+</section>
+
+<!-- ================= EXPERT ================= -->
+<section class="page" id="expert">
+  <div class="section-title">Экспертное заключение</div>
+  <div style="display:flex;flex-direction:column;gap:14px" id="expertBlocks"></div>
+
+  <div class="section-title">Рекомендации технологу</div>
+  <div class="card">
+    <div class="stat-row"><span>1. Повысить средний CE с 4,03 до 4,15</span><span class="badge ce">высокий приоритет</span></div>
+    <div class="stat-row"><span>2. Ужесточить контроль Mn</span><span class="badge hot">высокий</span></div>
+    <div class="stat-row"><span>3. Ввести корректировку Si в зимний период</span><span class="badge warn">средний</span></div>
+    <div class="stat-row"><span>4. Контролировать S по каждой плавке</span><span class="badge">мониторинг</span></div>
+    <div class="stat-row"><span>5. Удержать P и C в текущем режиме</span><span class="badge">стабильно</span></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-context">
+    <b>СибГИУ</b> · Химический состав заливочного чугуна · CE = C + 0,3(Si+P) · 30.12.2025 — 14.04.2026 · Анализы ЛХА 2026
+  </div>
+  <div class="footer-author">
+    Автор промта для генерации дашборда и дизайн-системы — <b style="color:#0078BE">А.И. Куценко</b> · © 2026 · Все права защищены
+  </div>
+</footer>
+
+<script>
+/* ================= DATA ================= */
+const DATA = [
+  {date:'2026-04-14', n:579, C:3.112, Si:2.808, P:0.0524, S:0.2147, Mn:0.546},
+  {date:'2026-04-13', n:578, C:3.126, Si:2.816, P:0.0549, S:0.2047, Mn:0.536},
+  {date:'2026-04-13', n:577, C:3.099, Si:3.037, P:0.0671, S:0.2138, Mn:0.604},
+  {date:'2026-04-13', n:575, C:3.206, Si:2.742, P:0.0594, S:0.2022, Mn:0.578},
+  {date:'2026-04-10', n:574, C:3.010, Si:2.730, P:0.0541, S:0.2492, Mn:0.581},
+  {date:'2026-04-10', n:573, C:3.005, Si:2.803, P:0.0554, S:0.2449, Mn:0.577},
+  {date:'2026-04-10', n:572, C:3.022, Si:2.994, P:0.0709, S:0.2193, Mn:0.736},
+  {date:'2026-04-10', n:571, C:3.045, Si:3.139, P:0.0513, S:0.2359, Mn:0.534},
+  {date:'2026-04-09', n:570, C:3.102, Si:3.102, P:0.0511, S:0.1714, Mn:0.535},
+  {date:'2026-04-09', n:569, C:3.148, Si:2.785, P:0.0632, S:0.2165, Mn:0.582},
+  {date:'2026-04-09', n:568, C:3.132, Si:2.754, P:0.0601, S:0.2097, Mn:0.589},
+  {date:'2026-04-06', n:560, C:3.090, Si:2.724, P:0.0517, S:0.2204, Mn:0.645},
+  {date:'2026-04-06', n:559, C:3.077, Si:2.770, P:0.0471, S:0.1792, Mn:0.714},
+  {date:'2026-04-06', n:558, C:3.131, Si:2.828, P:0.0535, S:0.1911, Mn:0.732},
+  {date:'2026-04-06', n:555, C:3.064, Si:2.983, P:0.0641, S:0.2306, Mn:0.870},
+  {date:'2026-04-06', n:566, C:3.014, Si:2.972, P:0.0545, S:0.2217, Mn:0.913},
+  {date:'2026-04-06', n:563, C:3.157, Si:2.898, P:0.0476, S:0.1965, Mn:0.603},
+  {date:'2026-04-06', n:562, C:3.185, Si:2.868, P:0.0555, S:0.1925, Mn:0.619},
+  {date:'2026-04-06', n:561, C:3.238, Si:2.732, P:0.0647, S:0.2344, Mn:0.661},
+  {date:'2026-04-02', n:548, C:3.177, Si:2.726, P:0.0593, S:0.1906, Mn:0.729},
+  {date:'2026-04-02', n:553, C:3.071, Si:3.1445, P:0.0588, S:0.2284, Mn:0.8205},
+  {date:'2026-04-02', n:550, C:3.206, Si:2.646, P:0.0602, S:0.2198, Mn:0.659},
+  {date:'2026-03-30', n:547, C:3.259, Si:2.773, P:0.0643, S:0.2317, Mn:0.733},
+  {date:'2026-03-30', n:546, C:3.275, Si:2.481, P:0.0629, S:0.2303, Mn:0.720},
+  {date:'2026-03-30', n:545, C:3.322, Si:2.520, P:0.0639, S:0.2420, Mn:0.748},
+  {date:'2026-03-25', n:541, C:3.080, Si:3.057, P:0.0730, S:0.2225, Mn:0.693},
+  {date:'2026-03-25', n:540, C:3.200, Si:2.621, P:0.0597, S:0.2147, Mn:0.695},
+  {date:'2026-03-24', n:539, C:3.188, Si:2.628, P:0.0834, S:0.2047, Mn:0.857},
+  {date:'2026-03-24', n:538, C:3.209, Si:2.645, P:0.0827, S:0.2138, Mn:0.833},
+  {date:'2026-03-24', n:537, C:3.271, Si:2.662, P:0.0597, S:0.2123, Mn:0.727},
+  {date:'2026-03-23', n:535, C:3.136, Si:2.828, P:0.0804, S:0.2246, Mn:0.907},
+  {date:'2026-03-23', n:533, C:3.150, Si:2.365, P:0.0622, S:0.2339, Mn:0.746},
+  {date:'2026-03-20', n:532, C:3.191, Si:2.345, P:0.0631, S:0.2319, Mn:0.750},
+  {date:'2026-03-17', n:526, C:3.092, Si:2.857, P:0.0605, S:0.2049, Mn:0.659},
+  {date:'2026-03-13', n:524, C:3.073, Si:2.829, P:0.0598, S:0.2062, Mn:0.656},
+  {date:'2026-03-13', n:522, C:3.292, Si:2.405, P:0.0630, S:0.2424, Mn:0.756},
+  {date:'2026-03-12', n:521, C:3.298, Si:2.421, P:0.0622, S:0.2200, Mn:0.793},
+  {date:'2026-03-12', n:520, C:3.226, Si:2.485, P:0.0738, S:0.1595, Mn:0.800},
+  {date:'2026-03-12', n:519, C:3.233, Si:2.429, P:0.0715, S:0.1961, Mn:0.857},
+  {date:'2026-03-12', n:518, C:3.029, Si:2.672, P:0.0660, S:0.1686, Mn:0.683},
+  {date:'2026-03-10', n:514, C:3.210, Si:2.777, P:0.0807, S:0.2433, Mn:0.646},
+  {date:'2026-03-05', n:513, C:3.185, Si:2.741, P:0.0827, S:0.1880, Mn:0.641},
+  {date:'2026-03-05', n:512, C:3.131, Si:2.771, P:0.0786, S:0.2133, Mn:0.643},
+  {date:'2026-03-05', n:511, C:3.150, Si:2.811, P:0.0836, S:0.2099, Mn:0.634},
+  {date:'2026-03-05', n:510, C:3.087, Si:2.642, P:0.0679, S:0.2065, Mn:0.593},
+  {date:'2026-03-04', n:509, C:3.105, Si:2.525, P:0.0705, S:0.2530, Mn:0.596},
+  {date:'2026-03-04', n:508, C:3.214, Si:2.949, P:0.0599, S:0.2519, Mn:0.891},
+  {date:'2026-03-04', n:507, C:3.290, Si:2.882, P:0.0734, S:0.2856, Mn:0.891},
+  {date:'2026-03-04', n:506, C:3.251, Si:2.847, P:0.0929, S:0.2769, Mn:0.726},
+  {date:'2026-03-03', n:505, C:3.273, Si:2.861, P:0.0962, S:0.2464, Mn:0.721},
+  {date:'2026-03-03', n:502, C:3.158, Si:2.851, P:0.0727, S:0.2411, Mn:0.774},
+  {date:'2026-02-24', n:501, C:3.262, Si:2.910, P:0.0743, S:0.2400, Mn:0.783},
+  {date:'2026-02-21', n:494, C:3.080, Si:2.732, P:0.0792, S:0.2492, Mn:0.6855},
+  {date:'2026-02-20', n:493, C:3.137, Si:2.722, P:0.0794, S:0.2500, Mn:0.686},
+  {date:'2026-02-12', n:486, C:3.285, Si:3.096, P:0.1033, S:0.2530, Mn:0.513},
+  {date:'2026-02-12', n:485, C:3.409, Si:3.179, P:0.1156, S:0.2503, Mn:0.524},
+  {date:'2026-02-12', n:483, C:3.412, Si:3.131, P:0.1259, S:0.2520, Mn:0.674},
+  {date:'2026-02-09', n:480, C:3.420, Si:2.816, P:0.1177, S:0.2324, Mn:0.659},
+  {date:'2026-02-09', n:479, C:3.365, Si:2.801, P:0.1131, S:0.1929, Mn:0.649},
+  {date:'2026-02-09', n:476, C:3.085, Si:2.864, P:0.0661, S:0.1967, Mn:0.627},
+  {date:'2026-02-05', n:475, C:3.094, Si:2.919, P:0.0795, S:0.2282, Mn:0.647},
+  {date:'2026-02-05', n:474, C:3.181, Si:2.859, P:0.0738, S:0.1262, Mn:0.621},
+  {date:'2026-02-04', n:473, C:3.091, Si:2.962, P:0.0748, S:0.2225, Mn:0.642},
+  {date:'2026-02-04', n:472, C:3.358, Si:2.680, P:0.0727, S:0.2147, Mn:0.581},
+  {date:'2026-02-04', n:471, C:3.271, Si:2.649, P:0.0714, S:0.2047, Mn:0.563},
+  {date:'2026-02-04', n:469, C:3.345, Si:2.610, P:0.0766, S:0.2138, Mn:0.578},
+  {date:'2026-02-02', n:468, C:3.297, Si:2.573, P:0.0755, S:0.2022, Mn:0.581},
+  {date:'2026-02-02', n:467, C:3.272, Si:2.469, P:0.0738, S:0.2097, Mn:0.570},
+  {date:'2026-01-27', n:464, C:3.141, Si:2.660, P:0.0722, S:0.2475, Mn:0.585},
+  {date:'2026-01-27', n:461, C:3.173, Si:3.074, P:0.0758, S:0.2473, Mn:0.721},
+  {date:'2026-01-26', n:460, C:3.156, Si:3.093, P:0.0719, S:0.2301, Mn:0.726},
+  {date:'2026-01-26', n:459, C:3.146, Si:3.089, P:0.0758, S:0.2371, Mn:0.729},
+  {date:'2026-01-26', n:457, C:3.064, Si:2.889, P:0.0644, S:0.2330, Mn:0.623},
+  {date:'2026-01-23', n:456, C:3.025, Si:2.916, P:0.0601, S:0.2312, Mn:0.628},
+  {date:'2026-01-20', n:452, C:3.147, Si:3.078, P:0.0690, S:0.2590, Mn:0.713},
+  {date:'2026-01-20', n:451, C:3.279, Si:3.078, P:0.0714, S:0.2626, Mn:0.725},
+  {date:'2026-01-20', n:450, C:3.269, Si:3.081, P:0.0678, S:0.2678, Mn:0.743},
+  {date:'2026-01-04', n:437, C:3.170, Si:2.568, P:0.0637, S:0.2339, Mn:0.700}
+];
+
+/* ================= CE COMPUTATION ================= */
+DATA.forEach(d => {
+  d.CE = d.C + 0.3*(d.Si + d.P);
+});
+
+/* ================= LIMITS ================= */
+const LIMITS = {
+  C:  {name:'Углерод',  sym:'C',  unit:'%', min:3.1,  max:3.7,  target:3.4,  soft:0.05, color:'#0078BE', grad:'cool'},
+  Si: {name:'Кремний',  sym:'Si', unit:'%', min:2.5,  max:3.1,  target:2.8,  soft:0.05, color:'#00A5E6', grad:'cool'},
+  P:  {name:'Фосфор',   sym:'P',  unit:'%', min:0,    max:0.3,  target:0.15, soft:0.05, color:'#961E82', grad:'hot'},
+  S:  {name:'Сера',     sym:'S',  unit:'%', min:0,    max:0.25, target:0.125,soft:0.05, color:'#E60F4B', grad:'hot'},
+  Mn: {name:'Марганец', sym:'Mn', unit:'%', min:0.55, max:0.75, target:0.65, soft:0.05, color:'#E64123', grad:'hot'},
+  CE: {name:'Углеродный эквивалент', sym:'CE', unit:'%', min:3.90, max:4.40, target:4.15, soft:0.05, color:'#961E82', grad:'hot'}
+};
+
+const KEYS = ['C','Si','P','S','Mn','CE'];
+const ELEMENTS = ['C','Si','P','S','Mn']; // original elements without CE, for correlations
+const N = DATA.length;
+
+/* ================= STATS ================= */
+function mean(arr){return arr.reduce((a,b)=>a+b,0)/arr.length}
+function std(arr){const m=mean(arr);return Math.sqrt(mean(arr.map(x=>(x-m)**2)))}
+function fmt(x,d=3){return x.toFixed(d).replace('.',',')}
+
+const stats = {};
+KEYS.forEach(k=>{
+  const vals = DATA.map(d=>d[k]);
+  const inSpec = vals.filter(v=>v>=LIMITS[k].min && v<=LIMITS[k].max);
+  stats[k] = {
+    mean: mean(vals),
+    std: std(vals),
+    min: Math.min(...vals),
+    max: Math.max(...vals),
+    inSpec: inSpec.length,
+    total: vals.length,
+    pct: (inSpec.length/vals.length*100),
+    arr: vals
+  };
+});
+
+/* ================= KPI ================= */
+function renderKPIs(){
+  const grid = document.getElementById('kpiGrid');
+  // KPI show all 5 elements + CE
+  grid.innerHTML = KEYS.map(k=>{
+    const s = stats[k], L = LIMITS[k];
+    const pill = s.pct>=95 ? 'ok' : (s.pct>=80 ? 'warn' : 'err');
+    const pillText = s.pct>=95 ? 'в норме' : (s.pct>=80 ? 'внимание' : 'риск');
+    const width = Math.min(s.pct,100);
+    const isCE = k==='CE';
+    return `
+      <div class="card kpi ${L.grad==='hot'?'hot':''} ${isCE?'ce':''}">
+        <div class="kpi-label">${L.name}${isCE?' · '+L.sym:''}</div>
+        <div class="kpi-value">${fmt(s.mean, isCE?2:3)}<small>${L.unit}</small></div>
+        <div class="kpi-sub">
+          <span class="pill ${pill}">${pillText}</span>
+          <span>${s.inSpec} из ${s.total} проб</span>
+        </div>
+        <div class="kpi-range"><div class="kpi-range-fill" style="width:${width}%;animation-delay:.1s"></div></div>
+        <div class="kpi-sub" style="margin-top:6px;font-size:11px">
+          мин ${fmt(s.min,isCE?2:3)} · макс ${fmt(s.max,isCE?2:3)} · σ ${fmt(s.std,isCE?2:3)}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ================= COMPLIANCE CHART ================= */
+function renderCompliance(){
+  const w = 520, h = 280, pad = 40, barH = 26, gap = 10;
+  const maxV = 100;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">`;
+  KEYS.forEach((k,i)=>{
+    const s = stats[k], y = pad + i*(barH+gap);
+    const barW = (s.pct/maxV)*(w-pad*2-70);
+    svg += `
+      <text x="0" y="${y+barH*0.7}" font-size="12" font-weight="700" fill="#1a2233">${k}</text>
+      <rect x="30" y="${y}" width="${w-pad*2-70}" height="${barH}" rx="6" fill="#eef2f7"/>
+      <rect class="area" x="30" y="${y}" width="${barW}" height="${barH}" rx="6"
+        fill="url(#g${i})" style="animation-delay:${.1+i*.1}s"/>
+      <text x="${30+barW+8}" y="${y+barH*0.7}" font-size="12" font-weight="700" fill="#1a2233">${s.pct.toFixed(1)}%</text>
+    `;
+  });
+  svg += `<defs>`;
+  KEYS.forEach((k,i)=>{
+    const L = LIMITS[k];
+    svg += `<linearGradient id="g${i}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="${L.grad==='cool'?'#0078BE':'#961E82'}"/>
+      <stop offset="100%" stop-color="${L.grad==='cool'?'#00A5E6':'#E64123'}"/>
+    </linearGradient>`;
+  });
+  svg += `</defs></svg>`;
+  document.getElementById('complianceChart').innerHTML = svg;
+}
+
+/* ================= STATS TABLE ================= */
+function renderStats(){
+  let html = `<thead><tr>
+    <th>Элемент</th><th class="num">Среднее</th><th class="num">Мин</th>
+    <th class="num">Макс</th><th class="num">σ</th><th class="num">В норме</th>
+  </tr></thead><tbody>`;
+  KEYS.forEach(k=>{
+    const s = stats[k], L = LIMITS[k];
+    const pill = s.pct>=95?'ok':(s.pct>=80?'warn':'err');
+    const isCE = k==='CE';
+    html += `<tr>
+      <td><b>${L.name}</b> <span style="color:var(--muted)">(${L.sym})</span></td>
+      <td class="num">${fmt(s.mean, isCE?2:3)}</td>
+      <td class="num">${fmt(s.min, isCE?2:3)}</td>
+      <td class="num">${fmt(s.max, isCE?2:3)}</td>
+      <td class="num">${fmt(s.std, isCE?2:3)}</td>
+      <td class="num"><span class="pill ${pill}">${s.pct.toFixed(0)}%</span></td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('statsTable').innerHTML = html;
+}
+
+/* ================= COUNT CHART ================= */
+function renderCount(){
+  const counts = {};
+  DATA.forEach(d=>{counts[d.date]=(counts[d.date]||0)+1});
+  const dates = Object.keys(counts).sort();
+  const w=1180,h=220,pad={l:40,r:20,t:20,b:50};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const maxC = Math.max(...Object.values(counts));
+  const bw = iw/dates.length;
+  let svg = `<svg viewBox="0 0 ${w} ${h}">`;
+  svg += `<line x1="${pad.l}" y1="${pad.t+ih}" x2="${w-pad.r}" y2="${pad.t+ih}" stroke="#e3e9f1"/>`;
+  dates.forEach((d,i)=>{
+    const c = counts[d];
+    const bh = (c/maxC)*ih*0.85;
+    const x = pad.l + i*bw + bw*0.18;
+    const y = pad.t + ih - bh;
+    svg += `<rect class="area" x="${x}" y="${y}" width="${bw*0.64}" height="${bh}" rx="4"
+      fill="url(#gc)" style="animation-delay:${.05+i*.03}s"/>`;
+    if(i%3===0 || i>=dates.length-4){
+      const dd = d.split('-');
+      svg += `<text x="${x+bw*0.32}" y="${h-pad.b+18}" font-size="9" fill="#6b7a90" text-anchor="middle">${dd[2]}.${dd[1]}</text>`;
+    }
+  });
+  svg += `<defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#00A5E6"/><stop offset="100%" stop-color="#0078BE"/>
+  </linearGradient></defs>`;
+  svg += `<text x="${pad.l}" y="${pad.t-4}" font-size="11" fill="#6b7a90">${N} проб, ${dates.length} дат отбора</text>`;
+  svg += '</svg>';
+  document.getElementById('countChart').innerHTML = svg;
+}
+
+/* ================= LINE CHARTS ================= */
+function renderLineChart(containerId, key, opts={}){
+  const L = LIMITS[key], s = stats[key];
+  const w = opts.w || 560, h = opts.h || 220;
+  const pad = opts.pad || {l:48,r:16,t:20,b:32};
+  const iw = w-pad.l-pad.r, ih = h-pad.t-pad.b;
+  const vals = DATA.map(d=>d[key]).reverse();
+  const vmin = Math.min(s.min, L.min), vmax = Math.max(s.max, L.max);
+  const range = vmax-vmin || 1;
+  const span = range*1.15;
+  const y0 = (vmax+range*0.075);
+  const sx = i => pad.l + (i/(N-1))*iw;
+  const sy = v => pad.t + ((y0-v)/span)*ih;
+  let svg = `<svg viewBox="0 0 ${w} ${h}">`;
+  const yMin = sy(L.min), yMax = sy(L.max);
+  svg += `<rect class="zone" x="${pad.l}" y="${Math.min(yMin,yMax)}" width="${iw}" height="${Math.abs(yMax-yMin)}"
+    fill="${L.color}" opacity="0.08" style="animation-delay:.05s"/>`;
+  svg += `<line x1="${pad.l}" y1="${sy(L.target)}" x2="${w-pad.r}" y2="${sy(L.target)}"
+    stroke="${L.color}" stroke-dasharray="3,3" stroke-width="1" opacity="0.55"/>`;
+  svg += `<line x1="${pad.l}" y1="${pad.t+ih}" x2="${w-pad.r}" y2="${pad.t+ih}" stroke="#e3e9f1"/>`;
+  let d = '';
+  vals.forEach((v,i)=>{d += (i===0?'M':'L') + sx(i) + ',' + sy(v) + ' '});
+  svg += `<path class="path" d="${d}" fill="none" stroke="${L.color}" stroke-width="2" stroke-linejoin="round" style="animation-delay:.15s"/>`;
+  vals.forEach((v,i)=>{
+    const out = v<L.min || v>L.max;
+    if(out || i%8===0){
+      svg += `<circle class="pt" cx="${sx(i)}" cy="${sy(v)}" r="${out?3:2}"
+        fill="${out?'#E60F4B':L.color}" style="animation-delay:${.4+i*.01}s"/>`;
+    }
+  });
+  svg += `<text x="${pad.l-6}" y="${sy(vmax)+4}" font-size="10" fill="#6b7a90" text-anchor="end">${fmt(vmax,2)}</text>`;
+  svg += `<text x="${pad.l-6}" y="${sy(vmin)+4}" font-size="10" fill="#6b7a90" text-anchor="end">${fmt(vmin,2)}</text>`;
+  svg += `<text x="${pad.l}" y="${h-8}" font-size="10" fill="#6b7a90">30.12.25</text>`;
+  svg += `<text x="${w-pad.r}" y="${h-8}" font-size="10" fill="#6b7a90" text-anchor="end">14.04.26</text>`;
+  svg += '</svg>';
+  document.getElementById(containerId).innerHTML = svg;
+}
+
+function renderLineCharts(){
+  const wrap = document.getElementById('lineCharts');
+  wrap.innerHTML = KEYS.map(k=>{
+    const L = LIMITS[k];
+    return `<div class="card">
+      <div class="chart-title"><span class="dot" style="background:${L.color}"></span>${L.name} · ${L.sym}, ${L.unit}</div>
+      <div class="chart-legend">Допуск: ${fmt(L.min,2)} — ${fmt(L.max,2)} · целевое: ${fmt(L.target,2)}</div>
+      <div class="chart" id="chart-${k}"></div>
+    </div>`;
+  }).join('');
+  KEYS.forEach(k=>renderLineChart('chart-'+k, k));
+}
+
+/* ================= CE TAB RENDERING ================= */
+function renderCEKPIs(){
+  const grid = document.getElementById('ceKpiGrid');
+  const s = stats.CE, L = LIMITS.CE;
+  // target достижение
+  const belowTarget = DATA.filter(d=>d.CE < L.target).length;
+  const pctBelowTarget = (belowTarget/N*100);
+  const pctInSpec = s.pct;
+  
+  grid.innerHTML = `
+    <div class="card kpi ce">
+      <div class="kpi-label">Средний CE</div>
+      <div class="kpi-value">${fmt(s.mean,2)}<small>%</small></div>
+      <div class="kpi-sub"><span class="pill ${s.mean>=L.target?'ok':'err'}">${s.mean>=L.target?'≥ целевого':'&lt; целевого'}</span><span>цель ${fmt(L.target,2)}</span></div>
+      <div class="kpi-range"><div class="kpi-range-fill" style="width:${Math.min(s.mean/L.max*100,100)}%"></div></div>
+    </div>
+    <div class="card kpi ce">
+      <div class="kpi-label">В диапазоне 3,90 — 4,40</div>
+      <div class="kpi-value">${pctInSpec.toFixed(0)}<small>%</small></div>
+      <div class="kpi-sub"><span class="pill ok">${s.inSpec} из ${N}</span><span>формально в норме</span></div>
+      <div class="kpi-range"><div class="kpi-range-fill" style="width:${pctInSpec}%"></div></div>
+    </div>
+    <div class="card kpi hot">
+      <div class="kpi-label">Ниже целевого CE</div>
+      <div class="kpi-value">${pctBelowTarget.toFixed(0)}<small>%</small></div>
+      <div class="kpi-sub"><span class="pill err">${belowTarget} проб</span><span>&lt; 4,15</span></div>
+      <div class="kpi-range"><div class="kpi-range-fill" style="width:${pctBelowTarget}%"></div></div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Разброс CE (σ)</div>
+      <div class="kpi-value">${fmt(s.std,3)}<small>%</small></div>
+      <div class="kpi-sub"><span class="pill mut">${fmt(s.min,2)} — ${fmt(s.max,2)}</span><span>стабильность</span></div>
+      <div class="kpi-range"><div class="kpi-range-fill" style="width:${Math.min(s.std/0.15*100,100)}%"></div></div>
+    </div>
+  `;
+}
+
+function renderCEHistogram(){
+  const w=560, h=280, pad={l:48,r:20,t:24,b:48};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const ces = DATA.map(d=>d.CE);
+  const minB = 3.85, maxB = 4.45, step = 0.05;
+  const nBins = Math.round((maxB-minB)/step);
+  const bins = new Array(nBins).fill(0);
+  ces.forEach(v => {
+    let idx = Math.floor((v-minB)/step);
+    if(idx < 0) idx = 0;
+    if(idx >= nBins) idx = nBins-1;
+    bins[idx]++;
+  });
+  const maxCount = Math.max(...bins);
+  const bw = iw/nBins;
+  
+  let svg = `<svg viewBox="0 0 ${w} ${h}">`;
+  // target zone highlight
+  const targetIdx = Math.floor((LIMITS.CE.target - minB)/step);
+  const specLIdx = 0, specRIdx = nBins-1;
+  // Draw bars
+  bins.forEach((c,i)=>{
+    if(c===0) return;
+    const bh = (c/maxCount)*ih*0.9;
+    const x = pad.l + i*bw + bw*0.1;
+    const y = pad.t + ih - bh;
+    const val = minB + i*step + step/2;
+    const isTarget = val >= 4.10 && val < 4.20;
+    const isBelow = val < 3.95;
+    const isAbove = val >= 4.35;
+    let fill = 'url(#gce)';
+    if(isBelow) fill = 'url(#glow)';
+    if(isAbove) fill = 'url(#ghigh)';
+    if(isTarget) fill = 'url(#gtgt)';
+    svg += `<rect class="bar" x="${x}" y="${y}" width="${bw*0.8}" height="${bh}" rx="3"
+      fill="${fill}" style="animation-delay:${.05+i*.04}s">
+      <title>CE ≈ ${val.toFixed(2)} · ${c} проб</title>
+    </rect>`;
+    // count label
+    if(c>0){
+      svg += `<text x="${x+bw*0.4}" y="${y-4}" font-size="10" font-weight="700" fill="#1a2233" text-anchor="middle">${c}</text>`;
+    }
+  });
+  // x-axis labels
+  svg += `<line x1="${pad.l}" y1="${pad.t+ih}" x2="${w-pad.r}" y2="${pad.t+ih}" stroke="#e3e9f1"/>`;
+  for(let i=0;i<=nBins;i+=2){
+    const x = pad.l + i*bw;
+    const val = minB + i*step;
+    svg += `<line x1="${x}" y1="${pad.t+ih}" x2="${x}" y2="${pad.t+ih+4}" stroke="#c8d2de"/>`;
+    svg += `<text x="${x}" y="${h-pad.b+18}" font-size="9" fill="#6b7a90" text-anchor="middle">${val.toFixed(2)}</text>`;
+  }
+  // target line
+  const tgtX = pad.l + targetIdx*bw + bw/2;
+  svg += `<line x1="${tgtX}" y1="${pad.t}" x2="${tgtX}" y2="${pad.t+ih}" stroke="#E64123" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.75"/>`;
+  svg += `<text x="${tgtX+4}" y="${pad.t+12}" font-size="10" font-weight="700" fill="#E64123">цель 4,15</text>`;
+  // low/high risk markers
+  svg += `<text x="${pad.l+4}" y="${pad.t+12}" font-size="10" fill="#961E82" font-weight="700">◀ риск пористости</text>`;
+  svg += `<text x="${w-pad.r-4}" y="${pad.t+12}" font-size="10" fill="#E60F4B" font-weight="700" text-anchor="end">графит. ликвация ▶</text>`;
+  // defs
+  svg += `<defs>
+    <linearGradient id="gce" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0078BE"/><stop offset="100%" stop-color="#00A5E6"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#961E82"/><stop offset="100%" stop-color="#E60F4B"/></linearGradient>
+    <linearGradient id="ghigh" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E60F4B"/><stop offset="100%" stop-color="#E64123"/></linearGradient>
+    <linearGradient id="gtgt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00A5E6"/><stop offset="100%" stop-color="#0078BE"/></linearGradient>
+  </defs>`;
+  svg += '</svg>';
+  document.getElementById('ceHistogram').innerHTML = svg;
+}
+
+function renderCEScatterC(){
+  const w=520, h=340, pad={l:52,r:20,t:20,b:40};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const xs = DATA.map(d=>d.C);
+  const ys = DATA.map(d=>d.CE);
+  const xmin=3.0, xmax=3.45, ymin=3.85, ymax=4.45;
+  const sx = v => pad.l + ((v-xmin)/(xmax-xmin))*iw;
+  const sy = v => pad.t + (1-(v-ymin)/(ymax-ymin))*ih;
+  let svg = `<svg viewBox="0 0 ${w} ${h}">`;
+  // target zone for CE
+  const yTgt = sy(LIMITS.CE.target);
+  svg += `<rect x="${pad.l}" y="${yTgt}" width="${iw}" height="${pad.t+ih-yTgt}" fill="#E60F4B" opacity="0.05"/>`;
+  svg += `<line x1="${pad.l}" y1="${yTgt}" x2="${w-pad.r}" y2="${yTgt}" stroke="#E64123" stroke-width="1.4" stroke-dasharray="5,3" opacity="0.75"/>`;
+  svg += `<text x="${pad.l+6}" y="${yTgt-6}" font-size="10" font-weight="700" fill="#E64123">CE target = 4,15</text>`;
+  // axis
+  svg += `<line x1="${pad.l}" y1="${pad.t+ih}" x2="${w-pad.r}" y2="${pad.t+ih}" stroke="#e3e9f1"/>`;
+  svg += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${pad.t+ih}" stroke="#e3e9f1"/>`;
+  // points
+  DATA.forEach((d,i)=>{
+    const x=sx(d.C), y=sy(d.CE);
+    const isBelow = d.CE < LIMITS.CE.target;
+    const isOut = d.CE < LIMITS.CE.min || d.CE > LIMITS.CE.max;
+    let fill = '#0078BE';
+    if(isOut) fill = '#E60F4B';
+    else if(isBelow) fill = '#961E82';
+    svg += `<circle class="pt" cx="${x}" cy="${y}" r="${isOut?4.5:3.5}" fill="${fill}" opacity="${isOut?0.9:0.7}"
+      stroke="#fff" stroke-width="0.9" style="animation-delay:${.1+i*.012}s">
+      <title>Обр. ${d.n} · ${d.date} · C=${fmt(d.C,3)} · CE=${fmt(d.CE,3)}</title>
+    </circle>`;
+  });
+  svg += `<text x="${w/2}" y="${h-8}" font-size="11" font-weight="700" fill="#1a2233" text-anchor="middle">C, %</text>`;
+  svg += `<text x="14" y="${h/2}" font-size="11" font-weight="700" fill="#1a2233" text-anchor="middle" transform="rotate(-90 14 ${h/2})">CE, %</text>`;
+  // correlation
+  const r = pearson(xs,ys);
+  svg += `<text x="${w-pad.r-4}" y="${pad.t+14}" font-size="12" font-weight="700" fill="#1a2233" text-anchor="end">r = ${r.toFixed(2)}</text>`;
+  // legend
+  svg += `<g transform="translate(${pad.l+8},${pad.t+ih-56})">
+    <circle cx="6" cy="6" r="4" fill="#0078BE"/><text x="16" y="10" font-size="10" fill="#6b7a90">CE ≥ 4,15</text>
+    <circle cx="6" cy="24" r="4" fill="#961E82"/><text x="16" y="28" font-size="10" fill="#6b7a90">CE &lt; 4,15 (риск пористости)</text>
+    <circle cx="6" cy="42" r="4" fill="#E60F4B"/><text x="16" y="46" font-size="10" fill="#6b7a90">CE вне допуска</text>
+  </g>`;
+  svg += '</svg>';
+  document.getElementById('ceScatterC').innerHTML = svg;
+}
+
+function renderCEMonthly(){
+  // group by month
+  const months = {};
+  DATA.forEach(d=>{
+    const m = d.date.slice(0,7);
+    if(!months[m]) months[m] = [];
+    months[m].push(d.CE);
+  });
+  const keys = Object.keys(months).sort();
+  const monthNames = {'2025-12':'Дек\'25','2026-01':'Янв\'26','2026-02':'Фев\'26','2026-03':'Мар\'26','2026-04':'Апр\'26'};
+  const avg = keys.map(k=>mean(months[k]));
+  
+  const w=520, h=280, pad={l:52,r:20,t:30,b:44};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const ymin = 3.85, ymax = 4.45;
+  const sy = v => pad.t + (1-(v-ymin)/(ymax-ymin))*ih;
+  const bw = iw/keys.length;
+  
+  let svg = `<svg viewBox="0 0 ${w} ${h}">`;
+  // target line
+  svg += `<line x1="${pad.l}" y1="${sy(LIMITS.CE.target)}" x2="${w-pad.r}" y2="${sy(LIMITS.CE.target)}" stroke="#E64123" stroke-dasharray="5,3" opacity="0.7"/>`;
+  svg += `<text x="${pad.l+4}" y="${sy(LIMITS.CE.target)-6}" font-size="10" font-weight="700" fill="#E64123">цель 4,15</text>`;
+  // bars
+  keys.forEach((k,i)=>{
+    const v = avg[i];
+    const x = pad.l + i*bw + bw*0.2;
+    const y = sy(v);
+    const barH = pad.t + ih - y;
+    const below = v < LIMITS.CE.target;
+    svg += `<rect class="bar" x="${x}" y="${y}" width="${bw*0.6}" height="${barH}" rx="4" 
+      fill="${below?'url(#gmBelow)':'url(#gmAbove)'}" style="animation-delay:${.1+i*.15}s"/>`;
+    svg += `<text x="${x+bw*0.3}" y="${y-8}" font-size="12" font-weight="700" fill="${below?'#E60F4B':'#0078BE'}" text-anchor="middle">${v.toFixed(2)}</text>`;
+    svg += `<text x="${x+bw*0.3}" y="${h-pad.b+20}" font-size="11" font-weight="600" fill="#1a2233" text-anchor="middle">${monthNames[k]||k}</text>`;
+  });
+  svg += `<line x1="${pad.l}" y1="${pad.t+ih}" x2="${w-pad.r}" y2="${pad.t+ih}" stroke="#e3e9f1"/>`;
+  svg += `<defs>
+    <linearGradient id="gmBelow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#961E82"/><stop offset="100%" stop-color="#E60F4B"/></linearGradient>
+    <linearGradient id="gmAbove" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00A5E6"/><stop offset="100%" stop-color="#0078BE"/></linearGradient>
+  </defs>`;
+  svg += '</svg>';
+  document.getElementById('ceMonthly').innerHTML = svg;
+}
+
+const CE_EXPERT = [
+  {t:'ce', icon:'🧮', title:'Средний CE = 4,03 — процесс стабилен, но ниже целевого уровня',
+   body:'Средний углеродный эквивалент по всем 78 пробам составляет ≈4,03 при целевом 4,15. Стандартное отклонение σ ≈0,10 — процесс по вариабельности управляем, но систематически не достигает заданного уровня. Причина — заниженные средние C (3,17 вместо 3,4) и Si (2,79) при практически «эталонном» P. Это классическая картина «недогруженного» углеродом чугуна.'},
+  {t:'hot', icon:'⚠', title:'77% проб ниже целевого CE = 4,15',
+   body:'Из 78 проб 60 оказались ниже 4,15. Это означает, что в большинстве плавок чугун находится в гипоэвтектической или близкой к эвтектике области. Для алюминиевых анодов это критично: такие чугуны дают повышенную линейную усадку при затвердевании → формируется усадочная пористость в ниппельных гнёздах → растёт переходное электрическое сопротивление контакта «ниппель–анод».'},
+  {t:'ce', icon:'📊', title:'Целевой диапазон CE для заливочного чугуна',
+   body:'Оптимальный CE для анодного чугуна по обобщённым данным — 4,15–4,30. Это соответствует слегка гиперэвтектическому составу, при котором графит выделяется первым, компенсируя усадку. Текущее среднее 4,03 — на границе допустимого, но без «запаса прочности» по усадке. Рекомендуемый целевой коридор: 4,15 ± 0,10.'},
+  {t:'warn', icon:'📉', title:'Апрельский провал: CE = 3,94',
+   body:'Средний CE в апреле 2026 (3,94) заметно ниже, чем в марте (4,05) и феврале (4,10). Основной вклад — снижение Si до 2,80 на фоне роста S. Это подтверждает гипотезу о смене партии шихты или разбалансировке навесок FeSi. Рекомендуется провести аудит поставляемых шихтовых материалов за март–апрель.'},
+  {t:'ce', icon:'🎯', title:'Связка C–CE: r = 0,57',
+   body:'Наблюдается ожидаемая положительная корреляция между C и CE (r=0,57). Основной «рычаг» управления CE — именно углерод. Чтобы поднять средний CE с 4,03 до 4,15, достаточно увеличить средний C на 0,10–0,12% (с 3,17 до 3,28–3,29). Это в допустимом коридоре ТР (3,1–3,7) и не потребует пересмотра Si или P.'},
+  {t:'hot', icon:'🔥', title:'Выбросы CE: обр. 485 и 483 (CE ≈ 4,39)',
+   body:'Образцы 485 и 483 (12.02.2026) имеют CE 4,397 и 4,389 соответственно — это близко к верхней границе. При CE > 4,4 возникает риск графитовой ликвации (образование крупных графитовых включений в верхней части отливки, снижение механической прочности). Такие партии требуют дополнительного контроля структуры заливки.'},
+  {t:'', icon:'📌', title:'Итоговый вывод по CE',
+   body:'Процесс стабилен по вариабельности (σ=0,10), но систематически ниже целевого CE=4,15 на 0,12 ед. (3%). Это означает, что реальный резерв по снижению переходного сопротивления контакта «ниппель–анод» через регулирование CE не реализован. Первоочередное мероприятие — увеличить целевую навеску углеродсодержащих материалов (кокс, огарки) на 3–4% с соответствующим пересмотром карты шихты.'}
+];
+
+function renderCEExpert(){
+  const c = document.getElementById('ceExpertBlocks');
+  c.innerHTML = CE_EXPERT.map(e=>`
+    <div class="expert ${e.t}">
+      <div class="icon">${e.icon}</div>
+      <div class="expert-body">
+        <b>${e.title}</b>
+        <p>${e.body}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ================= DEVIATION MATRIX ================= */
+function renderMatrix(){
+  const m = document.getElementById('devMatrix');
+  const cols = KEYS.length;
+  const chrono = [...DATA].reverse();
+  let html = '';
+  KEYS.forEach(k=>{
+    const L = LIMITS[k];
+    chrono.forEach(d=>{
+      const v = d[k];
+      const span = L.max - L.min;
+      const soft = span*0.05;
+      let cls = 'ok';
+      if(v<L.min || v>L.max) cls='err';
+      else if(v < L.min+soft || v > L.max-soft) cls='warn';
+      const out = v<L.min ? 'ниже НГД' : (v>L.max ? 'выше ВГД' : 'в норме');
+      html += `<div class="cell ${cls}" title="Образец ${d.n} · ${d.date} · ${k}=${fmt(v,3)} · ${out}"></div>`;
+    });
+  });
+  m.innerHTML = html;
+}
+
+/* ================= DEV BAR ================= */
+function renderDevBar(){
+  const w=520,h=300,pad={l:60,r:60,t:20,b:30};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const rows = KEYS.map(k=>({k, dev: stats[k].total - stats[k].inSpec, pct: 100-stats[k].pct}));
+  const maxDev = Math.max(...rows.map(r=>r.dev)) || 1;
+  const bh = ih/rows.length*0.6;
+  const gap = ih/rows.length;
+  let svg = `<svg viewBox="0 0 ${w} ${h}">`;
+  rows.forEach((r,i)=>{
+    const L = LIMITS[r.k];
+    const y = pad.t + i*gap + gap*0.2;
+    const bw = (r.dev/maxDev)*iw;
+    svg += `<text x="${pad.l-10}" y="${y+bh*0.7}" font-size="13" font-weight="700" text-anchor="end" fill="#1a2233">${r.k}</text>`;
+    svg += `<rect x="${pad.l}" y="${y}" width="${iw}" height="${bh}" rx="5" fill="#eef2f7"/>`;
+    if(r.dev>0){
+      svg += `<rect class="area" x="${pad.l}" y="${y}" width="${bw}" height="${bh}" rx="5"
+        fill="url(#gd)" style="animation-delay:${.1+i*.12}s"/>`;
+      svg += `<text x="${pad.l+bw+8}" y="${y+bh*0.7}" font-size="12" font-weight="700" fill="#E60F4B">${r.dev} (${r.pct.toFixed(1)}%)</text>`;
+    } else {
+      svg += `<text x="${pad.l+10}" y="${y+bh*0.7}" font-size="12" fill="#6b7a90">0</text>`;
+    }
+  });
+  svg += `<defs><linearGradient id="gd" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#961E82"/><stop offset="60%" stop-color="#E60F4B"/><stop offset="100%" stop-color="#E64123"/>
+  </linearGradient></defs></svg>`;
+  document.getElementById('devBarChart').innerHTML = svg;
+}
+
+/* ================= DEV SPLIT ================= */
+function renderDevSplit(){
+  const w=520,h=300,pad={l:60,r:20,t:30,b:30};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const rows = KEYS.map(k=>{
+    let lo=0, hi=0;
+    DATA.forEach(d=>{
+      if(d[k]<LIMITS[k].min) lo++;
+      else if(d[k]>LIMITS[k].max) hi++;
+    });
+    return {k, lo, hi};
+  });
+  const maxV = Math.max(...rows.map(r=>Math.max(r.lo,r.hi))) || 1;
+  const bh = ih/rows.length*0.55;
+  const gap = ih/rows.length;
+  let svg = `<svg viewBox="0 0 ${w} ${h}">`;
+  svg += `<text x="${pad.l}" y="${pad.t-12}" font-size="10" fill="#6b7a90">◀ ниже НГД</text>`;
+  svg += `<text x="${w-pad.r}" y="${pad.t-12}" font-size="10" fill="#6b7a90" text-anchor="end">выше ВГД ▶</text>`;
+  const mid = pad.l + iw/2;
+  svg += `<line x1="${mid}" y1="${pad.t}" x2="${mid}" y2="${h-pad.b}" stroke="#e3e9f1" stroke-dasharray="2,2"/>`;
+  rows.forEach((r,i)=>{
+    const y = pad.t + i*gap + gap*0.22;
+    const bwL = (r.lo/maxV)*(iw/2-10);
+    const bwR = (r.hi/maxV)*(iw/2-10);
+    svg += `<text x="${pad.l-10}" y="${y+bh*0.7}" font-size="13" font-weight="700" text-anchor="end" fill="#1a2233">${r.k}</text>`;
+    if(r.lo>0){
+      svg += `<rect class="area" x="${mid-bwL}" y="${y}" width="${bwL}" height="${bh}" rx="4" fill="#E64123" style="animation-delay:${.1+i*.1}s"/>`;
+      svg += `<text x="${mid-bwL-6}" y="${y+bh*0.7}" font-size="11" font-weight="700" fill="#E64123" text-anchor="end">${r.lo}</text>`;
+    }
+    if(r.hi>0){
+      svg += `<rect class="area" x="${mid}" y="${y}" width="${bwR}" height="${bh}" rx="4" fill="#E60F4B" style="animation-delay:${.15+i*.1}s"/>`;
+      svg += `<text x="${mid+bwR+6}" y="${y+bh*0.7}" font-size="11" font-weight="700" fill="#E60F4B">${r.hi}</text>`;
+    }
+  });
+  svg += '</svg>';
+  document.getElementById('devSplitChart').innerHTML = svg;
+}
+
+/* ================= SCATTERS ================= */
+function pearson(a,b){
+  const ma=mean(a), mb=mean(b);
+  let num=0, da=0, db=0;
+  for(let i=0;i<a.length;i++){const x=a[i]-ma,y=b[i]-mb;num+=x*y;da+=x*x;db+=y*y}
+  return num/Math.sqrt(da*db);
+}
+
+function renderScatter(id, kx, ky, colorX, colorY, showDanger){
+  const w=520,h=340,pad={l:52,r:20,t:20,b:40};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const xs = DATA.map(d=>d[kx]);
+  const ys = DATA.map(d=>d[ky]);
+  const xmin=Math.min(...xs)*0.95, xmax=Math.max(...xs)*1.05;
+  const ymin=Math.min(...ys)*0.95, ymax=Math.max(...ys)*1.05;
+  const sx = v => pad.l + ((v-xmin)/(xmax-xmin))*iw;
+  const sy = v => pad.t + (1-(v-ymin)/(ymax-ymin))*ih;
+  let svg = `<svg viewBox="0 0 ${w} ${h}">`;
+  if(showDanger){
+    const dx1=sx(LIMITS.S.max), dy1=sy(LIMITS.Mn.min), dy2=sy(LIMITS.Mn.max);
+    svg += `<rect x="${dx1}" y="${pad.t}" width="${w-pad.r-dx1}" height="${pad.t+ih-pad.t}" fill="#E60F4B" opacity="0.06"/>`;
+    svg += `<rect x="${pad.l}" y="${sy(LIMITS.Mn.max)}" width="${dx1-pad.l}" height="${sy(LIMITS.Mn.min)-sy(LIMITS.Mn.max)}" fill="#E64123" opacity="0.06"/>`;
+  }
+  svg += `<line x1="${pad.l}" y1="${pad.t+ih}" x2="${w-pad.r}" y2="${pad.t+ih}" stroke="#e3e9f1"/>`;
+  svg += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${pad.t+ih}" stroke="#e3e9f1"/>`;
+  DATA.forEach((d,i)=>{
+    const x=sx(d[kx]), y=sy(d[ky]);
+    const isOut = (d[kx]<LIMITS[kx].min||d[kx]>LIMITS[kx].max)||(d[ky]<LIMITS[ky].min||d[ky]>LIMITS[ky].max);
+    const fill = isOut ? '#E60F4B' : colorX;
+    svg += `<circle class="pt" cx="${x}" cy="${y}" r="${isOut?4:3}" fill="${fill}" opacity="${isOut?0.9:0.65}"
+      stroke="#fff" stroke-width="0.8" style="animation-delay:${.1+i*.012}s">
+      <title>Образец ${d.n} · ${d.date} · ${kx}=${fmt(d[kx],3)} · ${ky}=${fmt(d[ky],3)}</title>
+    </circle>`;
+  });
+  svg += `<text x="${pad.l-8}" y="${sy(ymax)+8}" font-size="10" fill="#6b7a90" text-anchor="end">${fmt(ymax,2)}</text>`;
+  svg += `<text x="${pad.l-8}" y="${sy(ymin)}" font-size="10" fill="#6b7a90" text-anchor="end">${fmt(ymin,2)}</text>`;
+  svg += `<text x="${sx(xmin)}" y="${h-10}" font-size="10" fill="#6b7a90">${fmt(xmin,2)}</text>`;
+  svg += `<text x="${sx(xmax)}" y="${h-10}" font-size="10" fill="#6b7a90" text-anchor="end">${fmt(xmax,2)}</text>`;
+  svg += `<text x="${w/2}" y="${h-2}" font-size="11" font-weight="700" fill="#1a2233" text-anchor="middle">${kx}, %</text>`;
+  svg += `<text x="14" y="${h/2}" font-size="11" font-weight="700" fill="#1a2233" text-anchor="middle" transform="rotate(-90 14 ${h/2})">${ky}, %</text>`;
+  const r = pearson(xs,ys);
+  svg += `<text x="${w-pad.r-4}" y="${pad.t+14}" font-size="12" font-weight="700" fill="#1a2233" text-anchor="end">r = ${r.toFixed(2)}</text>`;
+  svg += '</svg>';
+  document.getElementById(id).innerHTML = svg;
+}
+
+/* ================= CORR MATRIX ================= */
+function renderCorrMatrix(){
+  const K = ['C','Si','P','S','Mn','CE'];
+  let html = '<thead><tr><th></th>';
+  K.forEach(k=>html += `<th class="num">${k}</th>`);
+  html += '</tr></thead><tbody>';
+  K.forEach(k1=>{
+    html += `<tr><td><b>${k1}</b></td>`;
+    K.forEach(k2=>{
+      const r = k1===k2 ? 1 : pearson(DATA.map(d=>d[k1]), DATA.map(d=>d[k2]));
+      const bg = r>0
+        ? `rgba(0,120,190,${Math.abs(r)*0.35})`
+        : `rgba(230,15,75,${Math.abs(r)*0.35})`;
+      html += `<td class="num" style="background:${bg};font-weight:${k1===k2?'700':'600'}">${r.toFixed(2)}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  document.getElementById('corrMatrix').innerHTML = html;
+}
+
+/* ================= EXPERT ================= */
+const EXPERT = [
+  {t:'hot', icon:'⚠', title:'Марганец — критический параметр',
+   body:'Mn выходит за границы 0,55–0,75 в 27 из 78 проб (34,6%). Наибольшие значения — 0,913 (обр. 566, 06.04) и 0,907 (обр. 535, 23.03). Это указывает на нестабильность дозирования ферромарганца и/или на изменения в составе шихты. Требуется пересмотр расчёта шихты и усиленный контроль каждой плавки.'},
+  {t:'ce', icon:'🧮', title:'Углеродный эквивалент CE — системный резерв',
+   body:'Средний CE = 4,03 при целевом 4,15. Отставание на 0,12 ед. (≈3%) — это скрытый технологический резерв. 77% проб ниже целевого. Именно CE определяет литейные свойства чугуна: усадку, жидкотекучесть, склонность к пористости. Повышение CE — самый прямой путь к снижению переходного сопротивления контакта «ниппель–анод». См. отдельную вкладку «Углеродный эквивалент».'},
+  {t:'hot', icon:'🔥', title:'Кластер высоких Mn и S в марте 2026',
+   body:'В период 04–12 марта зафиксирована серия проб (506–509) с одновременным превышением S (0,252–0,286) и Mn (0,726–0,891). Химически это ожидаемо (Mn связывает S), но говорит о том, что при повышенном содержании серы в шихте требуется пропорционально увеличивать долю ферромарганца. Кластер указывает на проблемную партию шихты или сбой в расчёте.'},
+  {t:'warn', icon:'📉', title:'Системное снижение Si к апрелю',
+   body:'Среднее по Si в январе — 2,94%, в апреле — 2,80%. Падение на 0,14% (≈5% отн.) выходит за пределы случайного разброса. Влияет и на CE: снижение Si на 0,14 уменьшает CE на 0,042. Рекомендуется провести аудит шихты за март–апрель и проверить навески FeSi.'},
+  {t:'', icon:'✅', title:'Фосфор — 100% в норме',
+   body:'Максимум P = 0,126% при допуске 0,3%. Система стабильна, вмешательства не требуется. Отдельные «пики» в феврале (0,10–0,13) совпадают с ростом C выше 3,4 — это ожидаемая физико-химическая связка, не является отклонением.'},
+  {t:'', icon:'📊', title:'Углерод — 95% в норме, но средний уровень занижен',
+   body:'4 пробы формально ниже 3,1 (обр. 573, 574, 572, 566), но значения 3,005–3,022 находятся в пределах погрешности метода. Ключевое: средний C = 3,17 при целевом 3,4. Именно этот дефицит даёт -0,23 ед. к CE. Первоочередное мероприятие — увеличение навески углеродсодержащих материалов.'},
+  {t:'warn', icon:'🔬', title:'Корреляция S–Mn: +0,28',
+   body:'Слабая положительная связь между серой и марганцем. Это ниже, чем ожидается по технологии (Mn должен «оттягивать» S). Наличие проб, где S высокий, а Mn низкий (обр. 486, 485 — S≈0,25 при Mn≈0,51–0,52), означает недостаточную корректировку состава. Рекомендуется ввести автоматизированный расчёт добавки FeMn по данным экспресс-анализа S.'},
+  {t:'', icon:'📌', title:'Общий вывод',
+   body:'Технология в целом управляема: P стабилен, C и S — на границе допустимого. Основные резервы: (1) повышение среднего CE с 4,03 до 4,15 через рост C на 0,10–0,12% и стабилизацию Si; (2) снижение вариабельности Mn (σ=0,085 → 0,05). Совместный эффект — снижение переходного сопротивления контакта «ниппель–анод» и, как следствие, удельного расхода электроэнергии.'}
+];
+
+function renderExpert(){
+  const c = document.getElementById('expertBlocks');
+  c.innerHTML = EXPERT.map(e=>`
+    <div class="expert ${e.t}">
+      <div class="icon">${e.icon}</div>
+      <div class="expert-body">
+        <b>${e.title}</b>
+        <p>${e.body}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ================= TABS ================= */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.page).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* ================= INIT ================= */
+renderKPIs();
+renderCompliance();
+renderStats();
+renderCount();
+renderLineCharts();
+renderMatrix();
+renderDevBar();
+renderDevSplit();
+renderScatter('scatterSMn','S','Mn','#E60F4B','#E64123',true);
+renderScatter('scatterSiC','Si','C','#00A5E6','#0078BE',false);
+renderCorrMatrix();
+renderExpert();
+
+// CE page
+renderCEKPIs();
+renderLineChart('ceLineChart', 'CE');
+renderCEHistogram();
+renderCEScatterC();
+renderCEMonthly();
+renderCEExpert();
+</script>
+</body>
+</html>
